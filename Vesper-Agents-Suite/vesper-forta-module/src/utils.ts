@@ -20,7 +20,6 @@ export const createFetcher = (
     return decodeParameters(jsonInteface.outputs as any[], encodedValue);
   };
 
-
 export function provideGetNetworkId(
   ethersProvider: providers.JsonRpcProvider
 ): Promise<number> {
