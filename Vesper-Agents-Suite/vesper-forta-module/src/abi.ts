@@ -96,13 +96,21 @@ export const POOL_ABI = [
         name: "",
       },
     ],
-  },{
+  },
+  {
     inputs: [],
     name: "name",
     outputs: [{ internalType: "string", name: "", type: "string" }],
     stateMutability: "view",
     type: "function"
-  },,
+  },
+  {
+    inputs: [],
+    name: "VERSION",
+    outputs: [{ internalType: "string", name: "", type: "string" }],
+    stateMutability: "view",
+    type: "function"
+  }
 ] as AbiItem[];
 
 export const ACCOUNTANT_ABI =
@@ -157,8 +165,68 @@ export const ACCOUNTANT_ABI =
         name: "debtRatio",
         type: "uint256",
       },
+      {
+        internalType: "uint256",
+        name: "externalDepositFee",
+        type: "uint256",
+      },      
     ],
   } as AbiItem;
+
+  export const ACCOUNTANT_ABI3 =
+  {
+    name: "strategy",
+    type: "function",
+    inputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    outputs: [
+      {
+        internalType: "bool",
+        name: "active",
+        type: "bool",
+      },
+      {
+        internalType: "uint256",
+        name: "interestFee",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "debtRate",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "lastRebalance",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "totalDebt",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "totalLoss",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "totalProfit",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "debtRatio",
+        type: "uint256",
+      }     
+    ],
+  } as AbiItem;  
 
 export default {
   STRATEGY,
