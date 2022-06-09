@@ -3,7 +3,7 @@ import { createFetcher, provideGetNetworkId } from "./utils";
 import { isZeroAddress } from "ethereumjs-util";
 import Web3 from "web3";
 import LRU from "lru-cache";
-import { STRATEGY, STRATEGY_ABI, POOL_ABI, GET_STRATEGIES, ACCOUNTANT_ABI } from "./abi";
+import { STRATEGY, STRATEGY_ABI, POOL_ABI, GET_STRATEGIES, ACCOUNTANT_ABI, ACCOUNTANT_ABI3 } from "./abi";
 import { Network, getEthersProvider } from "forta-agent";
 const axios = require("axios");
 
@@ -158,7 +158,7 @@ export default class VesperFetcher {
    
     return Promise.all([this.getNetworkName(), strategyContract.methods.NAME().call({}, block), poolContract.methods.name().call({}, block)])
       .then(function ([networkName, strategyName, poolName]) {
-        const metadataInfo = ` network = ${networkName}, strategyName =  ${strategyName}, strategyAddress = ${strategyAddress}, poolName = ${poolName}, poolAddress = ${poolAddress}`
+        const metadataInfo = ` network = ${networkName}, strategyName = ${strategyName}, strategyAddress = ${strategyAddress}, poolName = ${poolName}, poolAddress = ${poolAddress}`
         return metadataInfo
       })
   }
@@ -176,6 +176,16 @@ export default class VesperFetcher {
     return name
   }
 
+  public async getAaveAddressProvider() {
+    const provider = await getEthersProvider()
+    const network = await provideGetNetworkId(provider)
+    let aaveAddress = '0xB53C1a33016B2DC2fF3653530bfF1848a515c8c5'
+    if (network == Network.AVALANCHE) {
+      aaveAddress = '0xb6A86025F0FE1862B372cb0ca18CE3EDe02A318f'
+    }  
+    return aaveAddress
+  }
+
   private async _getStrategies(
     block: BlockId,
     fetchV3: boolean = true
@@ -190,7 +200,7 @@ export default class VesperFetcher {
       this.controller,
       STRATEGY
     );
-    for (let pool of pools) {
+    for (let pool of pools) {    
       if (network === Network.MAINNET) {
         const { strategy } = await fetchStrat(block, pool);
         if (!isZeroAddress(strategy)) {
@@ -208,13 +218,20 @@ export default class VesperFetcher {
             poolAccountant,
             GET_STRATEGIES
           )(block);
+
+          const poolVersion = (await createFetcher(
+            this.web3Call,
+            pool,
+            POOL_ABI[2]
+          )(block))[0];
+          const accountantAbi = poolVersion.startsWith("3.") ? ACCOUNTANT_ABI3 : ACCOUNTANT_ABI
           strategiesList.forEach(async (addr: string) => {
-            const { active, debtRatio } = (await createFetcher(
+            const config = (await createFetcher(
               this.web3Call,
               poolAccountant,
-              ACCOUNTANT_ABI
-            )(block, poolAccountant));
-            if (active && BigInt(debtRatio) > 0) {
+              accountantAbi
+            )(block, addr));
+            if (config.active && BigInt(config.debtRatio) > 0) {              
               V3.add(addr.toLowerCase());
             }
           });
