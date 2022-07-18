@@ -157,9 +157,14 @@ export default class VesperFetcher {
     );
    
     return Promise.all([this.getNetworkName(), strategyContract.methods.NAME().call({}, block), poolContract.methods.name().call({}, block)])
-      .then(function ([networkName, strategyName, poolName]) {
-        const metadataInfo = ` network = ${networkName}, strategyName = ${strategyName}, strategyAddress = ${strategyAddress}, poolName = ${poolName}, poolAddress = ${poolAddress}`
-        return metadataInfo
+      .then(function ([network, strategyName, poolName]) {
+        return {
+          network,
+          strategyName,
+          strategyAddress,
+          poolName,
+          poolAddress
+        }        
       })
   }
 

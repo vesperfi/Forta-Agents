@@ -5,31 +5,10 @@ import {
   decodeParameter,
 } from "forta-agent-tools";
 
-export const createFindingCallDetector: FindingGenerator = (callInfo) => {
-  return Finding.fromObject({
+function prepareFindingObject(strategyAddress:string, lossValue:any){
+  return {
     name: "Loss Reported",
-    description:
-      "A loss was reported by strategy.",
-    alertId: "Vesper",
-    type: FindingType.Info,
-    severity: FindingSeverity.Info,
-    protocol: "Vesper",
-    metadata: {
-      strategyAddress: callInfo?.arguments[0],
-      lossValue: callInfo?.arguments[1],
-    },
-  });
-};
-
-export const createFindingEventDetector: FindingGenerator = (eventInfo) => {
-  const { 1: lossValue } = decodeParameters(
-    ["uint256", "uint256", "uint256", "uint256", "uint256", "uint256"],
-    eventInfo?.data
-  );
-  const strategyAddress: string = decodeParameter("address", eventInfo?.topics[1]);
-  return Finding.fromObject({
-    name: "Loss Reported",
-    description: "A loss was reported by strategy.",
+    description: "Loss reported by",
     alertId: "Vesper",
     type: FindingType.Info,
     severity: FindingSeverity.Info,
@@ -38,7 +17,20 @@ export const createFindingEventDetector: FindingGenerator = (eventInfo) => {
       strategyAddress,
       lossValue,
     },
-  });
+  }
+}
+
+export const createFindingCallDetector: FindingGenerator = (callInfo) => {
+  return Finding.fromObject(prepareFindingObject(callInfo?.arguments[0], callInfo?.arguments[1]));
+};
+
+export const createFindingEventDetector: FindingGenerator = (eventInfo) => {
+  const { 1: lossValue } = decodeParameters(
+    ["uint256", "uint256", "uint256", "uint256", "uint256", "uint256"],
+    eventInfo?.data
+  );
+  const strategyAddress: string = decodeParameter("address", eventInfo?.topics[1]);
+  return Finding.fromObject(prepareFindingObject(strategyAddress, lossValue));
 };
 
 export const hasLosses = (log: Log) => {
