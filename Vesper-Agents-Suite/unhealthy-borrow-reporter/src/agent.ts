@@ -12,9 +12,9 @@ import {
 import { createFinding, contains } from "./utils";
 import BigNumber from "bignumber.js";
 const STRATEGY_KEY = "_Strategies"
-const COMPOUND_STRATEGIES = ["BenqiXYStrategy", "TraderJoeXYStrategy", "CompoundXYStrategy", "IronBankXYStrategy"]
-const AAVE_STRATEGIES = ["AaveXYStrategy"]
-const MAKER_STRATEGIES = ["MakerStrategy", "Maker-Strategy"]
+const COMPOUND_STRATEGIES = ["BenqiXY", "TraderJoeXY", "CompoundXY", "IronBankXY", "Compound_Vesper_Xy", "TraderJoe_Vesper_Xy", "Benqi_Vesper_Xy"]
+const AAVE_STRATEGIES = ["AaveXY", "AaveV2_Vesper_Xy", "Aave_Vesper_Xy"]
+const MAKER_STRATEGIES = ["Maker"]
 const TRADER_JOE = 'TraderJoe'
 const web3: Web3 = new Web3(getJsonRpcUrl());
 const cache: LRU<string, string[]> = new LRU<string, string[]>({ max: 100 });
