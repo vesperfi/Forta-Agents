@@ -15,13 +15,13 @@ export const createFinding = (metadata: any): Finding => {
 
 const objToString = (obj: any): string => {
   return Object.entries(obj).reduce((str, [p, val]) => {
-    return `${str}${p}: ${val}, `;
+    return `${str}${p}: ${val}\n `;
   }, '');
 }
 
 export const contains = (array: string[], name: string): any => {
   return array.some(element => {
-    if (name.includes(element)) {
+    if (name.toLowerCase().includes(element.toLowerCase())) {
       return true;
     }
     return false;
