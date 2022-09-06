@@ -98,9 +98,7 @@ export const provideHandleTransaction = (web3: Web3): HandleTransaction => {
       const lossInUSDC = amountsOut[path.length - 1]
       const lossInUSD = new BigNumber(lossInUSDC).dividedBy(new BigNumber('1e6'))
       if (lossInUSD.gt(REPORT_LOSS_LIMIT)) { // raise alert only when loss > REPORT_LOSS_ABOVE USD
-        const description = `${finding.description} ${metadata.strategyName} of ${metadata.poolName}.\n lossInCollateral = ${lossInCollateral} ${symbol}\n 
-        lossInUSD = $${lossInUSD.toFixed(0)}\n lossOfStrategyTVL = ${strategyLossInTvl.toFixed(2)}%\n strategyAddress = ${metadata.strategyAddress}\n 
-        poolAddress = ${metadata.poolAddress}\n network = ${metadata.network}`
+        const description = `${finding.description} ${metadata.strategyName} of ${metadata.poolName}.\n lossInCollateral = ${lossInCollateral} ${symbol}\n lossInUSD = $${lossInUSD.toFixed(0)}\n lossOfStrategyTVL = ${strategyLossInTvl.toFixed(2)}%\n strategyAddress = ${metadata.strategyAddress}\n poolAddress = ${metadata.poolAddress}\n network = ${metadata.network}`
         const findingWithMetadata = { ...finding, description }
         findingsWithMetadata = findingsWithMetadata.concat(Finding.fromObject(findingWithMetadata));
       }
